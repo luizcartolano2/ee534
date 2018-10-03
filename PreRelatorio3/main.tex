@@ -1,0 +1,137 @@
+\documentclass{article}
+
+\usepackage[brazil]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}% optional T1 font encoding
+\usepackage[%
+    colorlinks=true,
+    pdfborder={0 0 0},
+    linkcolor=red
+]{hyperref}
+\usepackage[all]{hypcap}
+\usepackage{amsmath}
+\interdisplaylinepenalty=2500
+\usepackage{graphicx}
+\usepackage[cmintegrals]{newtxmath}
+\usepackage{cite}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{indentfirst}
+\usepackage{siunitx}
+\usepackage{textgreek}
+\usepackage[portuguese,linesnumbered,ruled]{algorithm2e}
+\usepackage{multirow}
+\usepackage{anysize}
+
+\begin{document}
+
+\title{Preparação do Exp. III — Pré amplificador de áudio com Transistores de Efeito de Campo (FET)}
+\author{Bianca Yoshie Itiroko - 164923, Luiz Eduardo Cartolano - 183012, Seong Eun Kim - 177143 \\ EE534 - Turma Y - Grupo 2}
+\date{Setembro de 2018}
+
+\maketitle
+
+\section{Caracterização do FET} \label{sec:1}
+A partir do datasheet\cite{ref:datasheet} do transistor foi possível encontrar que V$_{TH}$ é igual a 0,8V. Usando a equação dada:
+\begin{equation}
+    k = \frac{I_{D,On}}{(V_{GS,On} - V_{TH})^2}
+    \label{eq:k}
+\end{equation}
+Temos que para V$_{GS}$ = $1,4V$, e I$_{D,On}$ = $1mA$, o valor de k é 0,0027 A/V$^2$.
+
+\section{Projeto de um Pré-Amplificador}
+Considerando os parâmetros dados pelo enunciado \cite{ref:roteiro} e os valores do item \ref{sec:1}, primeiro é preciso encontrar o valor de I$_D$:
+\begin{equation}
+    I_D = \frac{1}{2} * K * (V_{GS} - V_{DS})^2 = 1mA
+\end{equation}
+
+Sendo V$_{DS}$ dado por:
+\begin{equation}
+    V_{DS} = V_{CC} - R_D * I_D    
+\end{equation}
+\newline
+
+Então R$_D$ é igual a:
+\begin{equation}
+    R_D = \frac{-A_V}{K*\frac{-V_{CC}}{A_C - 1}}
+\end{equation}
+\newline
+
+De onde podemos concluir que R$_D$ = 5$K\Omega$.
+\newline
+
+Sendo V$_{GS}$ dado por:
+\begin{equation}
+    V_{GS} = \frac{V_{CC}}{R_1 + R_2} * R_2
+\end{equation}
+
+E R$_{in}$ igual a:
+\begin{equation}
+    R_{in} = \frac{R_1 * R_2}{R_1 + R_2}
+\end{equation}
+
+Então temos que:
+\begin{equation}
+    500 * 10^3 = \frac{v_{GS}}{V_{CC}} * R_1
+\end{equation}
+\begin{equation}
+    R_1 = 500*10^3 * \frac{12}{1,4}
+\end{equation}
+
+Obtendo que R$_1 \approx 4M\Omega$.
+\newline
+
+Uma vez que sabemos o valor de R$_1$, é possível então encontrar R$_2$, fazendo:
+\begin{equation}
+    \frac{1}{R_{in}} = \frac{1}{R_1} + \frac{1}{R_2}
+\end{equation}
+\begin{equation}
+    \frac{1}{500} = \frac{1}{4000} + \frac{1}{R_2}
+\end{equation}
+
+Obtendo que R$_2 \approx 571,42k\Omega$.
+\newline
+
+A simulação do circuito pode ser acessada em \cite{ref:simu}.
+\newline
+
+Para calcular a potência dissipada em cada resistor, utilizamos a fórmula:
+\begin{equation}
+    P = \frac{V^2}{R}
+\end{equation}
+
+Para R$_1$,
+\begin{equation}
+    V_{R_1} = \frac{R_1}{R_1 + R_2} * V_{cc} = 10,5V
+\end{equation}
+
+\begin{equation}
+    P_{R_1} = \frac{V_{R_1}^2}{R_1} = 2,75 * 10^{-5}W
+\end{equation}
+
+Para R$_2$,
+\begin{equation}
+    V_{GS} = \frac{R_2}{R_1 + R_2} * V_{cc} = 1,5V
+\end{equation}
+
+\begin{equation}
+    P_{R_2} = \frac{V_{GS}^2}{R_2} = 3,9*10^{-6}W
+\end{equation}
+
+Para R$_d$,
+\begin{equation}
+    P_{R_d} = R_d * I_d^2 = 5*10^{-3}W
+\end{equation}
+\newline
+
+Por fim, podemos dizer que o transistor \emph{BSS100} pode ser utilizado 
+para V$_{in}$ = 10$mVp$, pois substituindo os valores encontrados para as resistências, e usando a tensão em questão no circuito simulado, é possível verificar seu funcionamento.
+
+
+
+\nocite{*}
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
+
